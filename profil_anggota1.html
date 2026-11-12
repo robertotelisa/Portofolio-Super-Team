@@ -69,6 +69,18 @@
   }
 
   /* ====== TEMPAT SIKLUS 2: aktivitas terakhir (tambah panel baru di <main>) ====== */
+
+    .activity { display: grid; grid-template-columns: 220px 1fr; gap: 1.2rem; align-items: center; }
+    .activity + .activity { margin-top: 1.4rem; }
+    .activity img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; border: 4px solid var(--ink); }
+    .activity h3 { font-weight: 800; font-size: 1.1rem; }
+    .activity p { margin-top: .3rem; }
+
+    @media (max-width: 680px) {
+      .activity { grid-template-columns: 1fr; }
+    }
+
+    
   /* ====== TEMPAT SIKLUS 3: CSS untuk fitur JavaScript kamu ====== */
 
   @media (max-width: 680px) {
@@ -120,7 +132,17 @@
     </ul>
   </section>
 
-  <!-- SIKLUS 2: tambah <section class="panel" id="aktivitas"> di sini (teks + foto) -->
+
+    <section class="panel" id="aktivitas">
+      <h2>Aktivitas Terakhir</h2>
+      <div class="activity">
+        <img src="artifact/Kerja_Kelompok.jpeg" alt="Mengerjakan Tugas Kelompok AI">
+        <div>
+          <h3>Tugas Kelompok</h3>
+          <p>Mengerjakan Tugas AI yang berupa tugas kelompok di rumah teman kami.</p>
+        </div>
+      </div>
+    </section>
 </main>
 
 <!-- SIKLUS 3: tambah <script> fitur JavaScript kamu di sini -->
