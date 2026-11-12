@@ -190,6 +190,34 @@
       }
     }
     /* ====== TEMPAT SIKLUS 3: CSS untuk fitur JavaScript kamu ====== */
+    .skull-btn {
+      font-family: var(--display);
+      font-weight: 400;
+      font-size: 1.5rem;
+      letter-spacing: .04em;
+      padding: .3rem 1.4rem;
+      cursor: pointer;
+      background: var(--sun);
+      color: var(--ink);
+      border: 4px solid var(--ink);
+    }
+
+    .skull-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .skull-layer {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .skull-layer canvas {
+      display: block;
+    }
 
     @media (max-width: 680px) {
       .photo {
@@ -266,7 +294,111 @@
       </div>
     </section>
 
+    <section class="panel" id="skull">
+      <h2>Tengkorak Berjalan</h2>
+      <button class="skull-btn" id="skullBtn" type="button">Surprise!</button>
+    </section>
+
   </main>
+
+  <script>
+    // GANTI path ini sesuai lokasi file video webm kamu (satu folder dengan HTML ini)
+    const SKULL_VIDEO_SRC = "artifact/tengkorak.webm";
+
+    function spawnSkullLayer() {
+      const boxW = window.innerWidth;
+      const boxH = window.innerHeight;
+
+      const layer = document.createElement("div");
+      layer.className = "skull-layer";
+      layer.style.width = boxW + "px";
+      layer.style.height = boxH + "px";
+      layer.style.transform = "translate(-50%, -50%)";
+
+      const canvas = document.createElement("canvas");
+      canvas.width = boxW;
+      canvas.height = boxH;
+      layer.appendChild(canvas);
+      document.body.appendChild(layer);
+
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+      const video = document.createElement("video");
+      video.src = SKULL_VIDEO_SRC;
+      video.muted = true;
+      video.playsInline = true;
+      video.autoplay = true;
+
+      function cleanup() {
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+        layer.remove();
+      }
+
+      video.addEventListener("ended", cleanup);
+      video.addEventListener("error", () => {
+        console.error(
+          "[Tengkorak] Video gagal dimuat. Cek apakah path '" + SKULL_VIDEO_SRC +
+          "' benar-benar ada dan namanya persis sama (huruf besar/kecil termasuk)."
+        );
+        cleanup();
+      });
+
+      let chromaKeyFailed = false;
+
+      function draw() {
+        if (video.paused || video.ended) return;
+
+        // object-fit: cover, dihitung dari ukuran asli video ke ukuran canvas
+        const vwid = video.videoWidth || boxW;
+        const vhei = video.videoHeight || boxH;
+        const scale = Math.max(boxW / vwid, boxH / vhei);
+        const dw = vwid * scale;
+        const dh = vhei * scale;
+        const dx = (boxW - dw) / 2;
+        const dy = (boxH - dh) / 2;
+
+        ctx.clearRect(0, 0, boxW, boxH);
+        ctx.drawImage(video, dx, dy, dw, dh);
+
+        if (!chromaKeyFailed) {
+          try {
+            const frame = ctx.getImageData(0, 0, boxW, boxH);
+            const data = frame.data;
+            for (let i = 0; i < data.length; i += 4) {
+              const r = data[i], g = data[i + 1], b = data[i + 2];
+              // buang piksel hijau (green screen) jadi transparan
+              if (g > 85 && g > r * 1.25 && g > b * 1.25) {
+                data[i + 3] = 0;
+              }
+            }
+            ctx.putImageData(frame, 0, 0);
+          } catch (err) {
+            chromaKeyFailed = true;
+            console.error(
+              "[Tengkorak] Canvas ke-block browser (tainted canvas). " +
+              "Ini terjadi kalau halaman dibuka langsung dari file (file://) alih-alih lewat local server. " +
+              "Video tetap tampil tapi TANPA penghapusan green screen. " +
+              "Buka halaman ini lewat ekstensi 'Live Server' di VS Code (atau server lokal lain) supaya efek hijau-transparannya jalan.",
+              err
+            );
+          }
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      video.addEventListener("loadeddata", () => {
+        video.play().then(draw).catch((err) => {
+          console.error("[Tengkorak] video.play() ditolak browser:", err);
+          cleanup();
+        });
+      });
+    }
+
+    document.getElementById("skullBtn").addEventListener("click", spawnSkullLayer);
+  </script>
 
 </body>
 
