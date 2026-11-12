@@ -69,25 +69,21 @@
   }
 
   .surprise-btn {
-  font-family: var(--display); font-weight: 400; font-size: 1.5rem; letter-spacing: .04em;
-  padding: .3rem 1.4rem; cursor: pointer;
-  background: var(--sun); color: var(--ink); border: 4px solid var(--ink);
+    font-family: var(--display); font-weight: 400; font-size: 1.5rem; letter-spacing: .04em;
+    padding: .3rem 1.4rem; cursor: pointer;
+    background: var(--sun); color: var(--ink); border: 4px solid var(--ink);
   }
 
   .surprise-btn:hover { background: var(--accent); color: #fff; }
+  
   .surprise-dialog {
     margin: auto; padding: 1.2rem; text-align: center;
     width: min(90vw, 420px); background: #fff; border: 4px solid var(--ink);
-
   }
 
   .surprise-dialog::backdrop { background: rgba(27, 27, 58, .75); }
   .surprise-dialog img { width: 100%; max-height: 60vh; object-fit: contain; display: block; border: 4px solid var(--ink); }
   .surprise-dialog p { font-weight: 800; margin: .8rem 0 1rem; }
-
-
-
-  
 
   .activity { display: grid; grid-template-columns: 220px 1fr; gap: 1.2rem; align-items: center; }
   .activity + .activity { margin-top: 1.4rem; }
@@ -98,8 +94,6 @@
   @media (max-width: 680px) {
     .activity { grid-template-columns: 1fr; }
   }
-
-  
 
   @media (max-width: 680px) {
     .hero-inner { grid-template-columns: 1fr; justify-items: center; text-align: center; }
@@ -138,7 +132,6 @@
   <section class="panel skills" id="keahlian">
     <h2>Keahlian</h2>
     <h3>Bahasa pemrograman</h3>
-    
     <ul class="chips">
       <li>Java</li>
       <li>JavaScript</li>
@@ -150,60 +143,53 @@
     </ul>
   </section>
 
-
-    <section class="panel" id="aktivitas">
-      <h2>Aktivitas Terakhir</h2>
-      <div class="activity">
-        <img src="artifact/Kerja_Kelompok.jpeg" alt="Mengerjakan Tugas Kelompok AI">
-        <div>
-          <h3>Tugas Kelompok</h3>
-          <p>Mengerjakan Tugas AI yang berupa tugas kelompok di rumah teman kami.</p>
-        </div>
+  <section class="panel" id="aktivitas">
+    <h2>Aktivitas Terakhir</h2>
+    <div class="activity">
+      <img src="artifact/Kerja_Kelompok.jpeg" alt="Mengerjakan Tugas Kelompok AI">
+      <div>
+        <h3>Tugas Kelompok</h3>
+        <p>Mengerjakan Tugas AI yang berupa tugas kelompok di rumah teman kami.</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="panel" id="surprise">
+  <section class="panel" id="surprise">
     <h2>Surprise!</h2>
     <button class="surprise-btn" id="surpriseBtn" type="button">Click Me!</button>
   </section>
 </main>
 
-<!-- SIKLUS 3: tambah <script> fitur JavaScript kamu di sini -->
-    <dialog class="surprise-dialog" id="surpriseDialog">
-      <img id="surpriseImg" src="" alt="">
-      <p id="surpriseText"></p>
-      <form method="dialog">
-      <button class="surprise-btn" type="submit">Tutup</button>
-      </form>
-    </dialog>
+<dialog class="surprise-dialog" id="surpriseDialog">
+  <img id="surpriseImg" src="" alt="">
+  <p id="surpriseText"></p>
+  <form method="dialog">
+    <button class="surprise-btn" type="submit">Tutup</button>
+  </form>
+</dialog>
 
-  <script>
+<script>
+  const surprises = [
+    { src: "artifact/Kuda_Laut_anggota1.jpg", text: "WOEJOED ASLI HEWAN KUDA LAUT" },
+    { src: "artifact/CUKURUKUK_anggota1.jpg", text: "POSTUR MANUSIA DALAM 10 TAHUN" }
+  ];
 
-    const surprises = [
-      { src: "artifact/Kuda_Laut_anggota1.jpg", text: "WOEJOED ASLI HEWAN KUDA LAUT" },
-      { src: "artifact/CUKURUKUK_anggota1.jpg", text: "POSTUR MANUSIA DALAM 10 TAHUN" },
-      
-    ];
+  const dialog = document.getElementById("surpriseDialog");
+  const img = document.getElementById("surpriseImg");
+  const text = document.getElementById("surpriseText");
 
-    const dialog = document.getElementById("surpriseDialog");
-    const img = document.getElementById("surpriseImg");
-    const text = document.getElementById("surpriseText");
+  document.getElementById("surpriseBtn").addEventListener("click", () => {
+    const pick = surprises[Math.floor(Math.random() * surprises.length)];
+    img.src = pick.src;
+    img.alt = pick.text;
+    text.textContent = pick.text;
+    dialog.showModal();
+  });
 
-    document.getElementById("surpriseBtn").addEventListener("click", () => {
-      const pick = surprises[Math.floor(Math.random() * surprises.length)];
-      img.src = pick.src;
-      img.alt = pick.text;
-      text.textContent = pick.text;
-      dialog.showModal();
-    });
-
-    dialog.addEventListener("click", (e) => {
-      if (e.target === dialog) dialog.close();
-    });
-  </script>
-
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+</script>
 
 </body>
-
-
 </html>
